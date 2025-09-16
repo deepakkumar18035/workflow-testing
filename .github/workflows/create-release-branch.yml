@@ -1,0 +1,21 @@
+name: create-release-branch
+run-name: Create release branch from parent branch
+on:
+  workflow_dispatch:
+    inputs:
+      parent-branch:
+        description: "Parent branch"
+        required: true
+        default: "master"
+      child-branch:
+        description: "Child branch"
+        required: true
+        default: "release/1.0.0"
+jobs:
+  create-release-branch:
+    name: Create release branch
+    runs-on: github-hosted
+    steps:
+      - name: Step 1
+        run: |
+          echo "Creating release branch from parent branch ${{ inputs.parent-branch }} to child branch ${{ inputs.child-branch }}"
