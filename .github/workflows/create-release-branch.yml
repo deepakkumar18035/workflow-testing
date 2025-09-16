@@ -17,7 +17,7 @@ env:
 jobs:
   create-release-branch:
     name: Create release branch
-    runs-on: ubuntu-latest
+    runs-on: docker:20.10.22
     steps:
       - name: Setting up runner
         run: |
@@ -27,7 +27,7 @@ jobs:
       - name: Validate source branch
         run: |
           echo "Validating source branch..."
-          if [[ ${{ inputs.source-branch }} == 'master' ] || [ ${{ inputs.source-branch }} =~ ^release/ ]]; then
+          if [[ ${{ inputs.source-branch }} == 'master' ]] || [[ ${{ inputs.source-branch }} =~ $RELEASE_BRANCH_REGEX ]]; then
             echo "Source branch ${{ inputs.source-branch }} passes the regex"
           else
             echo "Source branch ${{ inputs.source-branch }} fails regex"
@@ -36,7 +36,7 @@ jobs:
       - name: Validate release branch
         run: |
           echo "Validating release branch..."
-          if [[ ${{ inputs.release-branch }} =~ ^release/ ]]; then
+          if [[ ${{ inputs.release-branch }} =~ $RELEASE_BRANCH_REGEX ]]; then
             echo "Release branch ${{ inputs.release-branch }} passes the regex"
           else
             echo "Release branch ${{ inputs.release-branch }} fails regex"
