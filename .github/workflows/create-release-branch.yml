@@ -1,21 +1,46 @@
 name: create-release-branch
-run-name: Create release branch from parent branch
+run-name: Create release branch
 on:
   workflow_dispatch:
     inputs:
-      parent-branch:
-        description: "Parent branch"
+      source-branch:
+        description: 'Source branch from which the release branch is created'
         required: true
-        default: "master"
-      child-branch:
-        description: "Child branch"
+        default: 'master'
+      release-branch:
+        description: 'Name of the new release branch'
         required: true
-        default: "release/1.0.0"
+        default: 'release/'
+
+env:
+  RELEASE_BRANCH_REGEX: "^release\/[1-9][0-9]?.[0-9][0-9]?.[0-9][0-9]?$"
 jobs:
   create-release-branch:
     name: Create release branch
     runs-on: ubuntu-latest
     steps:
-      - name: Step 1
+      - name: Setting up runner
         run: |
-          echo "Creating release branch from parent branch ${{ inputs.parent-branch }} to child branch ${{ inputs.child-branch }}"
+          echo "Setting up runner..."
+          echo "Updating & installing dependencies..."
+          time apk update && apk add curl jq git
+      - name: Validate source branch
+        run: |
+          echo "Validating source branch..."
+          if [[ ${{ inputs.source-branch }} == 'master' ] || [ ${{ inputs.source-branch }} =~ ^release/ ]]; then
+            echo "Source branch ${{ inputs.source-branch }} passes the regex"
+          else
+            echo "Source branch ${{ inputs.source-branch }} fails regex"
+            exit 1
+          fi
+      - name: Validate release branch
+        run: |
+          echo "Validating release branch..."
+          if [[ ${{ inputs.release-branch }} =~ ^release/ ]]; then
+            echo "Release branch ${{ inputs.release-branch }} passes the regex"
+          else
+            echo "Release branch ${{ inputs.release-branch }} fails regex"
+            exit 1
+          fi
+      - name: Checkout code
+        uses: actions/checkout@v4
