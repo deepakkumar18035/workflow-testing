@@ -14,7 +14,7 @@ on:
 jobs:
   create-release-branch:
     name: Create release branch
-    runs-on: github-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Step 1
         run: |
